@@ -1,31 +1,68 @@
 const handlers = require('./handlers');
+const pathRegexp = require('path-to-regexp');
+
+function removLastChar(str) {
+  const arr = str.split();
+  arr.pop();
+  return arr.join('');
+}
+
+function getHanleVal(req) {
+  let reqPath = req.path;
+  if (req.path.endsWith('/')) {
+    reqPath = removLastChar(reqPath);
+  }
+  const handleKey = req.method + ' ' + reqPath;
+  return handlers[handleKey] || handlers[handleKey + '/']
+}
+
+function getHandler(handleVal) {
+  let handler;
+
+  if (typeof handleVal === 'function') {
+    handler = handleVal;
+  } else if (Object.prototype.toString.call(handleVal)) {
+    handler = function (rep, res) {
+      res.json(handleVal);
+    };
+  } else {
+    handler = function (rep, res) {
+      res.send(handleVal);
+    };
+  }
+  return handler;
+}
 
 async function mock(app) {
-  for (const handleKey of Object.keys(handlers)) {
-    let [method, reqPath] = handleKey.split(' ')
-    if (!reqPath) {
-      reqPath = method;
-      method = 'GET';
+  app.use(function (req, res, next) {
+    if (req.path.indexOf('.') !== -1) {
+      return next();
+    }
+    const handleVal = getHanleVal(req);
+    if (handleVal) {
+      const handler = getHandler(handleVal);
+      return handler(req, res);
     }
 
-    const handleVal = handlers[handleKey];
+    for (const handleKey of Object.keys(handlers)) {
+      let [method, reqPath] = handleKey.split(' ')
+      if (!reqPath) {
+        reqPath = method;
+        method = 'GET';
+      }
 
-    let handler;
-
-    if (typeof handleVal === 'function') {
-      handler = handleVal;
-    } else if (Object.prototype.toString.call(handleVal)) {
-      handler = function (rep, res) {
-        res.json(handleVal);
-      };
-    } else {
-      handler = function (rep, res) {
-        res.send(handleVal);
-      };
+      if (req.method.toUpperCase !== method.toUpperCase) {
+        return next();
+      }
+      const regexp = pathRegexp(reqPath);
+      if (regexp.exec(req.path)) {
+        const handler = getHandler(handlers[handleKey]);
+        return handler(req, res);
+      }
     }
-
-    app[method.toLowerCase()](reqPath, handler);
-  }
+    next();
+  });
+  
 }
 
 module.exports = mock;

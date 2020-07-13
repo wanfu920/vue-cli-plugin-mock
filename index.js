@@ -1,3 +1,5 @@
+const path = require('path');
+
 const mock = require('./util/mock');
 const parseFile = require('./util/parseFile');
 const watch = require('./util/watch');

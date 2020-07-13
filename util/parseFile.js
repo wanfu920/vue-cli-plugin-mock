@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const handlers = require('./handlers');
 
-module.exports = function (filePath) {
+module.exports = function parseFile(filePath) {
   try {
     fileStats = fs.statSync(filePath);
   } catch (error) {
@@ -20,7 +20,14 @@ module.exports = function (filePath) {
   try {
     fileObj = require(filePath);
     if (mockFile && Object.prototype.toString.call(mockFile) === '[object Object]') {
-      Object.assign(handlers, mockFile)
+      for (const handleKey of Object.keys(mockFile)) {
+        let [method, reqPath] = handleKey.split(' ')
+        if (!reqPath) {
+          reqPath = method;
+          method = 'GET';
+        }
+        handlers[method.toUpperCase + ' ' + reqPath] = mockFile[handleKey];
+      }
     }
   } catch (error) {
     return;

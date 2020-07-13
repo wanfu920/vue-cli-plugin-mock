@@ -1,7 +1,12 @@
 {
   "name": "vue-cli-plugin-xmock",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "mock plugin for vue cli",
+  "files": [
+    "util",
+    "index.js",
+    "README.md"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/wanfu920/vue-cli-plugin-mock.git"
@@ -12,5 +17,8 @@
   "bugs": {
     "url": "https://github.com/wanfu920/vue-cli-plugin-mock/issues"
   },
-  "homepage": "https://github.com/wanfu920/vue-cli-plugin-mock#readme"
+  "homepage": "https://github.com/wanfu920/vue-cli-plugin-mock#readme",
+  "dependencies": {
+    "path-to-regexp": "^6.1.0"
+  }
 }
