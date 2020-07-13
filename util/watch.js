@@ -11,7 +11,7 @@ function fileChange(filePath) {
     clearTimeout(timeIds[filePath]);
   }
   timeIds[filePath] = setTimeout(function () {
-    const preFileObj = require.cache[filePath];
+    const preFileObj = require.cache[filePath] || {};
     delete require.cache[filePath];
     for (const handleKey of Object.keys(preFileObj)) {
       delete handlers[handleKey];
