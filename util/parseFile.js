@@ -19,14 +19,14 @@ module.exports = function parseFile(filePath) {
   let fileObj;
   try {
     fileObj = require(filePath);
-    if (mockFile && Object.prototype.toString.call(mockFile) === '[object Object]') {
-      for (const handleKey of Object.keys(mockFile)) {
+    if (fileObj && Object.prototype.toString.call(fileObj) === '[object Object]') {
+      for (const handleKey of Object.keys(fileObj)) {
         let [method, reqPath] = handleKey.split(' ')
         if (!reqPath) {
           reqPath = method;
           method = 'GET';
         }
-        handlers[method.toUpperCase + ' ' + reqPath] = mockFile[handleKey];
+        handlers[method.toUpperCase() + ' ' + reqPath] = fileObj[handleKey];
       }
     }
   } catch (error) {

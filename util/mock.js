@@ -2,7 +2,7 @@ const handlers = require('./handlers');
 const pathRegexp = require('path-to-regexp');
 
 function removLastChar(str) {
-  const arr = str.split();
+  const arr = str.split('');
   arr.pop();
   return arr.join('');
 }
@@ -13,6 +13,7 @@ function getHanleVal(req) {
     reqPath = removLastChar(reqPath);
   }
   const handleKey = req.method + ' ' + reqPath;
+
   return handlers[handleKey] || handlers[handleKey + '/']
 }
 
@@ -51,7 +52,7 @@ async function mock(app) {
         method = 'GET';
       }
 
-      if (req.method.toUpperCase !== method.toUpperCase) {
+      if (req.method.toUpperCase() !== method.toUpperCase()) {
         return next();
       }
       const regexp = pathRegexp(reqPath);
