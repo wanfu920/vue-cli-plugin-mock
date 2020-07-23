@@ -104,7 +104,7 @@ module.exports = {
 const { Random } = require('mockjs')
 const list = []
 module.exports = {
-  'POST /api/user:  (req, res) => {
+  'POST /api/user':  (req, res) => {
     const newUser = {
       id: Random.id(),
       name: req.query.name || Random.name(),
