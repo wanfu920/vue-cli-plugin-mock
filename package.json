@@ -1,6 +1,6 @@
 {
   "name": "vue-cli-plugin-xmock",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "mock plugin for vue cli",
   "files": [
     "util",

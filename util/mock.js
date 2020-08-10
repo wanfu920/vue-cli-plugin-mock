@@ -1,3 +1,4 @@
+const express = require('express');
 const handlers = require('./handlers');
 const pathRegexp = require('path-to-regexp');
 
@@ -35,6 +36,7 @@ function getHandler(handleVal) {
 }
 
 async function mock(app) {
+  app.use(express.json())
   app.use(function (req, res, next) {
     if (req.path.indexOf('.') !== -1) {
       return next();
