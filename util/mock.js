@@ -1,6 +1,6 @@
 const express = require('express');
 const handlers = require('./handlers');
-const pathRegexp = require('path-to-regexp');
+const { pathToRegexp } = require('path-to-regexp');
 
 function removLastChar(str) {
   const arr = str.split('');
@@ -57,7 +57,7 @@ async function mock(app) {
       if (req.method.toUpperCase() !== method.toUpperCase()) {
         return next();
       }
-      const regexp = pathRegexp(reqPath);
+      const regexp = pathToRegexp(reqPath);
       if (regexp.exec(req.path)) {
         const handler = getHandler(handlers[handleKey]);
         return handler(req, res);
