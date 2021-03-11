@@ -1,6 +1,4 @@
-const express = require('express');
 const handlers = require('./handlers');
-const { pathToRegexp } = require('path-to-regexp');
 
 function removLastChar(str) {
   const arr = str.split('');
@@ -36,7 +34,7 @@ function getHandler(handleVal) {
 }
 
 async function mock(app) {
-  app.use(express.json())
+  // app.use(express.json())
   app.use(function (req, res, next) {
     try {
       if (req.path.indexOf('.') !== -1) {
@@ -46,23 +44,6 @@ async function mock(app) {
       if (handleVal) {
         const handler = getHandler(handleVal);
         return handler(req, res);
-      }
-  
-      for (const handleKey of Object.keys(handlers)) {
-        let [method, reqPath] = handleKey.split(' ')
-        if (!reqPath) {
-          reqPath = method;
-          method = 'GET';
-        }
-  
-        if (req.method.toUpperCase() !== method.toUpperCase()) {
-          return next();
-        }
-        const regexp = pathToRegexp(reqPath);
-        if (regexp.exec(req.path)) {
-          const handler = getHandler(handlers[handleKey]);
-          return handler(req, res);
-        }
       }
     } catch (error) {
       console.log(error);
